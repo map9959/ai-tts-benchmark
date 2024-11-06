@@ -26,4 +26,4 @@ Audiofiles in the form of `[service name]-[voice name]-[sentence type].[pcm/wav]
 
 ## Acknowledgements
 
-This was done as part of my backend engineering work at @Standard-Practice. If you represent a medical practice or revenue cycle management firm, and you want an AI-powered solution for making outbound calls to insurance companies, contact us!
+This was done as part of my backend engineering work at [**Standard Practice**](https://standardpractice.ai). If you represent a medical practice or revenue cycle management firm, and you want an AI-powered solution for making outbound calls to insurance companies, contact us!
