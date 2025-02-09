@@ -1,3 +1,4 @@
 *.pcm
 *.wav
 .env
+*.mp3
