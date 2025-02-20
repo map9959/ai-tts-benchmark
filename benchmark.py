@@ -8,6 +8,8 @@ from config import API_KEYS, SAMPLE_RATE
 from cartesia import Cartesia
 from deepgram import DeepgramClient, SpeakOptions
 from elevenlabs import ElevenLabs, VoiceSettings, save
+from pydub import AudioSegment
+import os
 
 BACKENDS = ['cartesia', 'rime', 'deepgram', 'elevenlabs']
 VOICES_PER_SERVICE = 4
@@ -150,30 +152,77 @@ async def audio_output_elevenlabs(transcript, voice, filetag):
 async def generate_alphanumeric_id(length):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
+def convert_pcm_to_mp3(pcm_file, sample_rate=16000, channels=1, sample_width=2):
+    """Convert a PCM file to MP3 format"""
+    try:
+        # Create audio segment from PCM data
+        audio = AudioSegment(
+            data=open(pcm_file, 'rb').read(),
+            sample_width=sample_width,  # 2 bytes for 16-bit audio
+            frame_rate=sample_rate,
+            channels=channels
+        )
+        
+        # Create mp3 filename
+        mp3_file = pcm_file.replace('.pcm', '.mp3')
+        
+        # Export as MP3
+        audio.export(mp3_file, format='mp3')
+        
+        # Remove original PCM file
+        os.remove(pcm_file)
+        
+        return True
+    except Exception as e:
+        print(f"Error converting {pcm_file}: {str(e)}")
+        return False
+
 async def numeric_id_test(alphanumeric_id=None):
     if not alphanumeric_id:
         alphanumeric_id = await generate_alphanumeric_id(12)
+        print(f"\nGenerated ID: {alphanumeric_id}")
 
     for backend_name in BACKENDS:
+        print(f"\n=== Processing {backend_name.upper()} ===")
         alphanumeric_id_formatted = id_formatter(alphanumeric_id, backend_name)
         transcript_phrase = "Hello, my name is Jane Smith! I'm an AI agent and assistant. How can I help you today?"
         id_phrase = "Here's an example of an alphanumeric ID. It is " + alphanumeric_id_formatted + "."
+        
         for i in range(VOICES_PER_SERVICE):
             match backend_name:
                 case 'cartesia':
+                    print(f"Generating Cartesia audio for voice {cartesia_voices[i]['name']}...")
                     await audio_output_cartesia(transcript_phrase, cartesia_voices[i], 'intro')
                     await audio_output_cartesia(id_phrase, cartesia_voices[i], 'id')
+                    # Convert PCM files to MP3
+                    convert_pcm_to_mp3(f"cartesia-{cartesia_voices[i]['name']}-intro.pcm", sample_rate=8000)
+                    convert_pcm_to_mp3(f"cartesia-{cartesia_voices[i]['name']}-id.pcm", sample_rate=8000)
+                    print(f"✓ Completed Cartesia voice {cartesia_voices[i]['name']}")
                 case 'rime':
+                    print(f"Generating Rime audio for voice {rime_voices[i]}...")
                     await audio_output_rime(transcript_phrase, rime_voices[i], 'intro')
                     await audio_output_rime(id_phrase, rime_voices[i], 'id')
+                    # Convert PCM files to MP3
+                    convert_pcm_to_mp3(f"rime-{rime_voices[i]}-intro.pcm", sample_rate=8000)
+                    convert_pcm_to_mp3(f"rime-{rime_voices[i]}-id.pcm", sample_rate=8000)
+                    print(f"✓ Completed Rime voice {rime_voices[i]}")
                 case 'deepgram':
+                    print(f"Generating Deepgram audio for voice {deepgram_voices[i]}...")
                     await audio_output_deepgram(transcript_phrase, deepgram_voices[i], 'intro')
                     await audio_output_deepgram(id_phrase, deepgram_voices[i], 'id')
+                    print(f"✓ Completed Deepgram voice {deepgram_voices[i]}")
                 case 'elevenlabs':
+                    print(f"Generating ElevenLabs audio for voice {elevenlabs_voices[i][0]}...")
                     await audio_output_elevenlabs(transcript_phrase, elevenlabs_voices[i], 'intro')
                     await audio_output_elevenlabs(id_phrase, elevenlabs_voices[i], 'id')
+                    # Convert PCM files to MP3
+                    convert_pcm_to_mp3(f"elevenlabs-{elevenlabs_voices[i][0]}-intro.pcm")
+                    convert_pcm_to_mp3(f"elevenlabs-{elevenlabs_voices[i][0]}-id.pcm")
+                    print(f"✓ Completed ElevenLabs voice {elevenlabs_voices[i][0]}")
 
 async def main():
+    print("Starting TTS Benchmark...")
     await numeric_id_test()
+    print("\nBenchmark completed! ✨")
 
 asyncio.run(main())
