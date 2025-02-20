@@ -29,12 +29,10 @@ rime_voices = ['kendra', 'marissa', 'eva', 'selena']
 
 deepgram_voices = ['asteria', 'luna', 'stella', 'hera']
 
-elevenlabs_voices = [
-    ('David', '0GKwxxcRYcg0OlQ1l822'),
-    ('ELdoron', 'NwyAvGnfbFoNNEi4UuTq'),
-    ('Rachel', '21m00Tcm4TlvDq8ikWAM'),
-    ('Drew', '29vD33N1CtxCmqQRPOHJ')
-]
+elevenlabs_voices = [('Crystal', 'tRhabdS7JjlQ0lVEImuM'),
+                        ('Aria', '9BWtsMINqrJLrRacOk9x'),
+                        ('Tanya', 'Bwff1jnzl1s94AEcntUq'),
+                        ('Jessica', 'cgSgspJ2msm6clMCkdW9')]
 
 
 output_format = {
@@ -197,24 +195,21 @@ async def numeric_id_test(alphanumeric_id=None):
                     await audio_output_cartesia(transcript_phrase, cartesia_voices[i], 'intro')
                     await audio_output_cartesia(id_phrase, cartesia_voices[i], 'id')
                     # Convert PCM files to MP3
-                    convert_pcm_to_mp3(f"cartesia-{cartesia_voices[i]['name']}-intro.pcm")
-                    convert_pcm_to_mp3(f"cartesia-{cartesia_voices[i]['name']}-id.pcm")
+                    convert_pcm_to_mp3(f"cartesia-{cartesia_voices[i]['name']}-intro.pcm", sample_rate=8000)
+                    convert_pcm_to_mp3(f"cartesia-{cartesia_voices[i]['name']}-id.pcm", sample_rate=8000)
                     print(f"✓ Completed Cartesia voice {cartesia_voices[i]['name']}")
                 case 'rime':
                     print(f"Generating Rime audio for voice {rime_voices[i]}...")
                     await audio_output_rime(transcript_phrase, rime_voices[i], 'intro')
                     await audio_output_rime(id_phrase, rime_voices[i], 'id')
                     # Convert PCM files to MP3
-                    convert_pcm_to_mp3(f"rime-{rime_voices[i]}-intro.pcm")
-                    convert_pcm_to_mp3(f"rime-{rime_voices[i]}-id.pcm")
+                    convert_pcm_to_mp3(f"rime-{rime_voices[i]}-intro.pcm", sample_rate=8000)
+                    convert_pcm_to_mp3(f"rime-{rime_voices[i]}-id.pcm", sample_rate=8000)
                     print(f"✓ Completed Rime voice {rime_voices[i]}")
                 case 'deepgram':
                     print(f"Generating Deepgram audio for voice {deepgram_voices[i]}...")
                     await audio_output_deepgram(transcript_phrase, deepgram_voices[i], 'intro')
                     await audio_output_deepgram(id_phrase, deepgram_voices[i], 'id')
-                    # Convert PCM files to MP3
-                    convert_pcm_to_mp3(f"deepgram-{deepgram_voices[i]}-intro.pcm")
-                    convert_pcm_to_mp3(f"deepgram-{deepgram_voices[i]}-id.pcm")
                     print(f"✓ Completed Deepgram voice {deepgram_voices[i]}")
                 case 'elevenlabs':
                     print(f"Generating ElevenLabs audio for voice {elevenlabs_voices[i][0]}...")
