@@ -2,3 +2,5 @@
 *.wav
 .env
 *.mp3
+poetry.lock
+__pycache__/
