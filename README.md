@@ -8,15 +8,16 @@ Choosing the voice for your AI agent is like choosing its "face"; it's the first
 
 ## Instructions
 
-All dependencies are listed in the Pipfile, which can be installed and initialized with
-
-```
-pipenv install
-```
-
 Move `.env.example` to `.env` and fill out your API keys. It will be ignored by Git.
 
-Run the benchmark with
+All dependencies are listed in the `pyproject.toml`, which can be installed and initialized with
+
+```
+poetry install
+poetry env use
+```
+
+Finally, run the benchmark with
 
 ```
 python3 benchmark.py
