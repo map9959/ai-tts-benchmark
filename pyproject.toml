@@ -1,0 +1,27 @@
+[project]
+name = "ai-tts-benchmark"
+version = "0.1.0"
+description = "Comparison of various AI text-to-speech services"
+authors = [
+    {name = "map9959",email = "map9959@nyu.edu"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "cartesia (<2.0)",
+    "langchain (>=0.3,<0.4)",
+    "langchain-openai (>=0.3,<0.4)",
+    "pyaudio (==0.2.14)",
+    "elevenlabs (<2.0)",
+    "deepgram-sdk (<4.0)"
+]
+package-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
